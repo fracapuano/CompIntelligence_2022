@@ -1,6 +1,8 @@
 from collections import Counter
 import random
-from typing import Generator, Iterable
+from re import I
+from typing import Generator
+import collections.abc
 
 def problem(N: int, seed:int=None)->Generator:
     """Returns a generator for given value of N. 
@@ -20,8 +22,7 @@ def problem(N: int, seed:int=None)->Generator:
 
 class TupleSet: 
     def __init__(self, tup:tuple): 
-        # sorting input tuple
-        tup = tuple(sorted(tup))
+        tup = (tup, ) if not isinstance(tup, collections.abc.Sized) else tup
         # store seen tuples
         self.tuples = tup
         # store counter of visualized numbers
@@ -69,13 +70,31 @@ class TupleSet:
         new_tup = tuple(sorted(new_tup))
         # adding new tuple to those already observed
         self.tuples = (self.tuples, new_tup)
+
         for item in new_tup: 
                 self.add(item)
+    
+    def result(self, a:tuple)->tuple: 
+        """This method performs actions 'a'.
 
+        Args:
+            a (tuple): Action to be performed.
+
+        Returns:
+            tuple: New state once action is performed
+        """
+        # sanity check
+        if not isinstance(a, tuple) or not a: # either not tuple or empty tuple 
+            raise ValueError(f"Can't add {a} of type {type(a)} to already available tuples")
+        # sorting new tuple
+        a = tuple(sorted(a))
+
+        return (self.tuples, a)
 class Problem: 
     def __init__(self, N:int, seed:int=None):
         self.N = N 
-        self.P = problem(N = N, seed = seed)
+        self.P = tuple(map(lambda arg: tuple(sorted(arg)), problem(N = N, seed = seed)))
+        self.seed = seed
         self.goal = set(range(N))
     
     def is_solvable(self)->bool: 
@@ -121,17 +140,21 @@ class Problem:
         """
         return sum(candidate.count.values())
     
-    def possible_actions(self, candidate:TupleSet)->Generator: 
+    def possible_actions(self, candidate:TupleSet)->list: 
         """This function returns the possible actions given a candidate solution.
 
         Args:
             candidate (TupleSet): Object used to keep track of the states. 
 
-        Yields:
-            Generator: Available actions.
-        """
-
-        return [
-            subtuple for subtuple in tuple(map(lambda arg: tuple(sorted(arg)), self.P)) 
-            if subtuple not in map(lambda arg: tuple(sorted(arg)), candidate.tuples)
-        ]
+       Returns:
+            list: Available actions.
+        """ 
+        actions = []
+        for subtuple in self.P:
+            if not isinstance(candidate.tuples[0], collections.abc.Sized): 
+                if subtuple not in (candidate.tuples,):
+                    actions.append(subtuple) 
+            else: 
+                if subtuple not in candidate.tuples:
+                    actions.append(subtuple) 
+        return actions 
