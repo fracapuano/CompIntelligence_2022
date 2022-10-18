@@ -75,7 +75,7 @@ class SolvedProblem:
         return state
 
 def main(): 
-    problem_size = [5, 10, 20, 50, 100, 500]
+    problem_size = [5, 10, 20, 50, 100, 500, 1000]
     functions = ["Breadth First"] # to be further modified adding new functions
 
     for function, size in product(functions, problem_size): 
