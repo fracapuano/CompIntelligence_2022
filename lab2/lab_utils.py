@@ -1,7 +1,7 @@
 from collections import Counter
 import random
 from re import I
-from typing import Generator
+from typing import Generator, List
 from itertools import chain
 import numpy as np
 
@@ -80,6 +80,8 @@ class Problem:
         self.P = problem(N = N, seed = seed)
         self.seed = seed
         self.goal = set(range(N))
+
+        self.fitness_calls = 0
     
     def max_repetitions_cost(self): 
         """This function computes the value of the maximal cost deriving from repetitions of elements in P.
@@ -127,12 +129,12 @@ class Problem:
         Returns:
             float: Cost associated to the given candidate solution.
         """
+        # incrementing fitness calls
+        self.fitness_calls += 1
         # True (1) when a number is both in goal and candidate values, False (0) otherwise - to measure fitness 
         covering_fitness = sum([integer in candidate.count.keys() for integer in self.goal])
-        
         # Repetitions fitness (decreasing as number of duplicates increases)
         reps_fitness = sum(candidate.count.values())
-
         # normalizing both fitness indicators in 0-1
         covering_fitness /= self.N
         reps_fitness /= self.max_repetitions_cost()
@@ -144,7 +146,6 @@ class Genetics:
         self, 
         genetic_pool,
         pop_size:int=20,
-        tournament_size:int=5, 
         mutation_probability:float=0.7, 
         cross_probability:float=0.5
         ):
@@ -152,19 +153,21 @@ class Genetics:
         self.pop_size = pop_size
         self.mut = mutation_probability
         self.cross_p = cross_probability
-        self.tournament_size=tournament_size
         self.genetic_pool = genetic_pool
-
-    def recombination(self, parent1:Candidate, parent2:Candidate)->Candidate: 
-        """This function recombines parent1 and parent2 to obtain a child defined as a mixture of the two parents.
+    
+    def recombination(self, parents:List[Candidate])->Candidate: 
+        """This function recombines parents to obtain a child defined as a mixture of the two parents.
 
         Args:
-            parent1 (Candidate): Parent Candidate.
-            parent2 (Candidate): Parent Candidate.
+            parents (List[Candidate]): List of parents to be considered.
 
         Returns:
             Candidate: Offspring obtained as a combination of the parents. 
         """
+        if len(parents) != 2: 
+            raise NotImplementedError("Recombination for n != 2 has not been implemented yet")
+        
+        parent1, parent2 = parents
         return [p1_gene if realization > self.cross_p else p2_gene for p1_gene, p2_gene, realization in zip(parent1, parent2, np.random.random(size=len(parent1)))]
         
     def mutation(self, individual:Candidate)->Candidate:
