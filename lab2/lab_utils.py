@@ -188,11 +188,11 @@ class Genetics:
                 mutant[idx] = random.choice(self.genetic_pool)
         return mutant
      
-    def generate_offspring(self, parent1:Candidate, parent2:Candidate) -> list: 
+    def generate_offspring(self, parents:List[Candidate]) -> list: 
         """This function returns a population of individual obtained from parent1 and parent2.
 
         Returns:
             list: Population obtained from parent1 and parent2.
         """
-        return [self.mutation(self.recombination(parent1, parent2)) for _ in range(self.pop_size)]
+        return [self.mutation(self.recombination(parents)) for _ in range(self.pop_size)]
     
