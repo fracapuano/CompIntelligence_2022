@@ -13,6 +13,7 @@ This solution mainly stems from the resolution of the [one-max problem](https://
 To better encode the problem, we represented each candidate as an array of integers in the space $\mathbb{R}^{\vert P \vert}$, according to the definition of $P$ given in the [problem specification](https://github.com/squillero/computational-intelligence/blob/master/2022-23/lab1_set-covering.ipynb).
 
 Each candidate $x$ was defined as:
+
 $$
 x_i = 
 \begin{cases}
