@@ -54,7 +54,7 @@ python3 solution.py
 | **50** | 101 | 17.54 |
 | **100** | 230 | 34.48 |
 | **500** | 10398 | 729.99 |
-| **1000** | still running | still running |
+| **1000** | 163173 | 4802.42 |
 
 Our results can also be visualized for what concerns the number evolution of the population along generations. It is possible to see that in the 1000 generations allowed, the majority of the problem sizes converged passing the elbow point (after which the relative improvement of the fittest individual could be considered marginal). 
 
@@ -64,3 +64,8 @@ From this standpoint it is also possible to see that the very large cost associa
 |:-------------------------:|:-------------------------:|:-------------------------:|
 |![img](images/N%3D5-fitness.svg)|![img](images/N%3D10-fitness.svg)|![img](images/N%3D20-fitness.svg)|
 |![img](images/N=50-fitness.svg)|![img](images/N%3D100-fitness.svg)|![img](images/N=500-fitness.svg)|
+
+To obtain satisfactory results (in terms of weight) for our solution, we carried out an extra optimization-route (consisting of 10k generations) that converged to a solution having a final cost of 4232, obtained in 7092.64 seconds.
+
+The optimization process is presented in the following picture. 
+![img](images/N%3D1000-fitness.svg).
