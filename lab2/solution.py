@@ -26,7 +26,7 @@ class Solution:
         offspring_size:int,
         tournament_size:int=10,
         mutant_loci:int=1,
-        cross_probability:float=3e-1,
+        cross_probability:float=0.5,
         seed:int = None):
 
         self.population_size = population_size; self.offspring_size = offspring_size
@@ -69,6 +69,7 @@ class Solution:
         """
         offspring = list()
         recombinations = 0
+
         for _ in range(self.offspring_size): 
             # obtaining parents in the current population
             parents = self.obtain_parents()
@@ -79,7 +80,6 @@ class Solution:
             else: # do mutation
                 parent = random.sample(parents, k = 1)[0]
                 individual = self.genetics.mutation(parent)
-            
             offspring.append(individual)
         # storing the number of recombinant individuals in offspring
         self.recombinations.append(recombinations)
@@ -133,7 +133,7 @@ class Solution:
         return self.population[0], history
 
 def main(): 
-    problem_size = [5, 10, 20, 50, 100, 500, 1000]
+    problem_size = [5, 10, 20, 50, 100, 500]
 
     if args.clear_past:
         folders = ["./images", "./routes"]
@@ -150,7 +150,8 @@ def main():
             seed = 42, 
             population_size = pop_size, 
             offspring_size = off_size, 
-            tournament_size = tournament_size
+            tournament_size = tournament_size, 
+            cross_probability=0.7
             )
 
         if not s.problem.is_solvable(): 

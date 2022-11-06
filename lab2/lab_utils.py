@@ -73,7 +73,7 @@ class Problem:
         else: 
             return False
     
-    def fitness(self, candidate:List[bool], weights:list = [0.2, 0.8])->float: 
+    def fitness(self, candidate:List[bool], weights:list = [0.02, 1-0.02])->float: 
         """This function computes the fitness of a given candidate solution as per problem specifications.
         In particular, the fitness is normalized in the 0-1 range and obtained penalizing more 
         the repetitions than the non-coverage of certain numbers. 
@@ -100,10 +100,12 @@ class Problem:
         # Repetitions fitness (decreasing as number of duplicates increases)
         reps_fitness = len(list(chain.from_iterable(actual_candidate)))
         # normalizing both fitness indicators in 0-1
-        covering_fitness /= self.N
-        reps_fitness = (reps_fitness - self.N)/(self.max_reps_cost - self.N)
+        covering_fitness = (covering_fitness - 1) / (self.N - 1)
+        reps_fitness =  (reps_fitness - self.N)/(self.max_reps_cost - self.N)
         
-        return (w_coverage * covering_fitness + w_reps * reps_fitness)/(w_coverage + w_reps)
+        # return (w_coverage * covering_fitness + w_reps * reps_fitness)/(w_coverage + w_reps)
+        return (0.2 * covering_fitness - 0.8 * reps_fitness) + 0.8
+
 class Genetics:
     def __init__(
         self, 
@@ -147,11 +149,11 @@ class Genetics:
         Returns:
             List[int]: New candidate obtained mutating a given individual.
         """
-        for _ in range(self.mutant_loci): 
-            # sampling the index at which to perform mutation
-            mutant_index = np.random.randint(low = 0, high = len(individual))
-            # mutation (flip of 1 to 0 and viceversa) is obtained using XOR operator
-            individual[mutant_index] = individual[mutant_index] ^ 1
+        # for _ in range(self.mutant_loci): 
+        # sampling the index at which to perform mutation
+        mutant_index = np.random.randint(low = 0, high = len(individual))
+        # mutation (flip of 1 to 0 and viceversa) is obtained using XOR operator
+        individual[mutant_index] = individual[mutant_index] ^ 1
 
         return individual
     
