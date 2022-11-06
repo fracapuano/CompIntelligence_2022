@@ -37,7 +37,7 @@ To reproduce our results, set the seed to 42, and use the following values of hy
 | `cross_probability` | 0.7
 | `tournament_size` | 6
 | `max_generations` | 1000
-
+| `strategy`| $\mu/\rho + \lambda$
 
 Once the random seed is fixed to 42, to reproduce our results is sufficient to type in the command line: 
 
