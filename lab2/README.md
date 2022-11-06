@@ -35,7 +35,7 @@ Once these weights were available, we obtained the fitness value using the follo
 
 $$
 \begin{equation*}
-(w_{covering} \cdot \text{covering\_fitness} + w_{bloat} \cdot \text{reps\_fitness)} - w_{bloat} \in [0, 1]
+(w_{covering} \cdot \text{covering-fitness} + w_{bloat} \cdot \text{bloat-fitness)} - w_{bloat} \in [0, 1]
 \end{equation*}
 $$
 
