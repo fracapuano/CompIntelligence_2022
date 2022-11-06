@@ -1,6 +1,4 @@
-from collections import Counter
 import random
-from re import I
 from typing import Generator, List
 from itertools import chain
 import numpy as np
@@ -23,7 +21,7 @@ def problem(N: int, seed:int=None)->Generator:
 class Problem: 
     def __init__(self, N:int, seed:int=None):
         self.N = N 
-        self.P = np.array(problem(N = N, seed = seed))
+        self.P = np.array(problem(N = N, seed = seed), dtype=object)
         self.seed = seed
         self.goal = set(range(N))
 
@@ -54,7 +52,7 @@ class Problem:
         Returns:
             List[list]: P masked with respect to candidate.
         """
-        return self.P[candidate]
+        return self.P[[bool(ind) for ind in candidate]]
 
     def test_candidate(self, candidate:List[bool])->bool: 
         """This function returns a boolean correspoding to the test performed to conclude whether or not a given candidate
@@ -75,47 +73,49 @@ class Problem:
         else: 
             return False
     
-    def fitness(self, candidate:List[bool])->float: 
-        """This function computes the cost associated to a given candidate solution as per problem specifications.
+    def fitness(self, candidate:List[bool], weights:list = [0.2, 0.8])->float: 
+        """This function computes the fitness of a given candidate solution as per problem specifications.
+        In particular, the fitness is normalized in the 0-1 range and obtained penalizing more 
+        the repetitions than the non-coverage of certain numbers. 
+
 
         Args:
             candidate (Candidate): Object used to keep track of the states. 
+            weights (list, optional): Weights to be used to combine the two fitness indicators. 
+                                      Defaults to [0.2, 0.8]
 
         Returns:
             float: Cost associated to the given candidate solution.
         """
         # incrementing fitness calls
         self.fitness_calls += 1
+        # w_reps must be negative since repetitions are penalized
+        w_coverage, w_reps = weights; w_reps *= -1
         # retrieve actual candidate
         actual_candidate = self.return_candidate(candidate=candidate)
         # unique values in sub-P
         uniques_candidate = set(chain.from_iterable(actual_candidate))
-        # True (1) when a number is both in goal and uniques_candidate, False (0) otherwise, used to measure fitness in its `covering` dimension.
-        covering_fitness = sum([integer in uniques_candidate for integer in self.goal])
+        # number of distinct numbers is a measure of fitness in its `covering` dimension
+        covering_fitness = len(uniques_candidate)
         # Repetitions fitness (decreasing as number of duplicates increases)
         reps_fitness = len(list(chain.from_iterable(actual_candidate)))
         # normalizing both fitness indicators in 0-1
         covering_fitness /= self.N
-        reps_fitness /= self.max_reps_cost
+        reps_fitness = (reps_fitness - self.N)/(self.max_reps_cost - self.N)
         
-        return covering_fitness - 2 * reps_fitness
+        return (w_coverage * covering_fitness + w_reps * reps_fitness)/(w_coverage + w_reps)
 class Genetics:
     def __init__(
         self, 
-        genetic_pool,
         Mu:int=20,
         Lambda:int=40,
-        mutation_probability:float=0.7, 
-        cross_probability:float=0.5
+        mutant_loci:int=1,
         ):
         
         self.Mu = Mu; self.Lambda = Lambda
-        
-        self.mut = mutation_probability
-        self.cross_p = cross_probability
-        self.genetic_pool = genetic_pool
-    
-    def recombination(self, parents:List[List[bool]])->List[bool]: 
+        self.mutant_loci = mutant_loci
+            
+    def recombination(self, parents:List)->List[bool]: 
         """This function recombines parents to obtain a child defined as a mixture of the two parents.
 
         Args:
@@ -126,32 +126,32 @@ class Genetics:
         """
         if len(parents) != 2: 
             raise NotImplementedError("Recombination for n != 2 has not been implemented yet")
-        
-        parent1, parent2 = parents
-        return [p1_gene if realization > self.cross_p else p2_gene for p1_gene, p2_gene, realization in zip(parent1, parent2, np.random.random(size=len(parent1)))]
-        
-    def mutation(self, individual:List[bool])->List[bool]:
-        """This function mutates the candidate individual according to a given mutation probability.
+        # mapping parents to array
+        parent1, parent2 = list(map(lambda parent: np.array(parent, dtype=object), parents))
+        # randomly sampling a scalar to be used to cut-and-cross the two parents
+        recombination = np.random.random()
+        # performing recombination
+        recombined = np.hstack(
+            (
+                parent1[:int(recombination*len(parent1))], # up to recombination "index"
+                parent2[int(recombination*len(parent2)):]) # from recombiantion "index" onwards
+        )
+        return recombined.tolist()
+
+    def mutation(self, individual:List)->List[int]: 
+        """This function mutates n_loci of the candidate individual's genome.
 
         Args:
-            individual (List[bool]): Given individual considered.
+            individual (List): Given individual considered.
 
         Returns:
-            List[bool]: New candidate obtained mutating a given individual.
+            List[int]: New candidate obtained mutating a given individual.
         """
-        mutant = individual.copy()
-        for idx, gene in enumerate(individual):
-            # randomly chose whether or not to change a given element
-            if random.random() < self.mut:
-                # replace gene at position idx with its boolean opposite (through `~`)
-                mutant[idx] = ~gene
-        return mutant
-     
-    def generate_offspring(self, parents:List[List[bool]]) -> List[List[bool]]:
-        """This function returns a population of individual obtained from parents.
+        for _ in range(self.mutant_loci): 
+            # sampling the index at which to perform mutation
+            mutant_index = np.random.randint(low = 0, high = len(individual))
+            # mutation (flip of 1 to 0 and viceversa) is obtained using XOR operator
+            individual[mutant_index] = individual[mutant_index] ^ 1
 
-        Returns:
-            list: Population obtained from parent1 and parent2.
-        """
-        return [self.mutation(self.recombination(parents)) for _ in range(self.Lambda)]
+        return individual
     
