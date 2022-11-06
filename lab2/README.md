@@ -19,7 +19,7 @@ Specifically, given a candidate, the `fitness()` function returns a float, evalu
 
 ### The evolution
 Our method evolves through a given number of generations. 
-We implemented two different strategies: `comma`, which corresponds to the $(\lambda, \mu)$-strategy and `plus`, which corresponds to the $(\lambda + \mu)$-strategy.
+We implemented two different strategies: `comma`, which corresponds to the $(\mu/\rho, \lambda)$-strategy and `plus`, which corresponds to the $(\mu/\rho + \lambda)$-strategy.
 
 A generation is defined as follows.
 
