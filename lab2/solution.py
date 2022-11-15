@@ -156,6 +156,7 @@ def main():
 
         if not s.problem.is_solvable(): 
             raise Exception("Problem is not solvable!")
+            continue
         
         max_generations = args.max_generations
         save_evolution = args.save_evolution
