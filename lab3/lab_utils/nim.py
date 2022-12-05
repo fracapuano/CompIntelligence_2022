@@ -55,7 +55,7 @@ class Nim:
         self._k = kwargs.get("k", 1)
         self.alpha = kwargs.get("alpha", 0.)
         self.endgame_nim = kwargs.get("endgame_nim", 0.6)
-        self.strategy = kwargs.get("strategy", None)
+        self.strategy = kwargs.get("strategy", "sum")
 
     def nimming(self, row:int=None, num_objects:int=None, target:list=None, switch_player=False) ->None:
         """
