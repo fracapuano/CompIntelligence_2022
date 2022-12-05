@@ -54,8 +54,8 @@ def main():
         # given parameters for rule-based agent
         params = {
             "k": args.rule_k if args.rule_k is not None else 1, 
-            "alpha": args.rule_alpha if args.rule_alpha is not None else 0.6, 
-            "strategy": args.rule_strategy, 
+            "alpha": args.rule_alpha if args.rule_alpha is not None else 0., 
+            "strategy": args.rule_strategy if args.rule_strategy is not None else "sum", 
             "endgame_nim": args.rule_endgame_nim if args.rule_endgame_nim is not None else 0.6
         }
         game = Nim(args.nim_dimension, agent = args.agent.lower(), **params)
