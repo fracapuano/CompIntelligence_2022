@@ -1,11 +1,11 @@
 # Lab3 - Nim
-This repo contains the solution to the third laboratory of the 2022/2023 Computational Intelligence. The problem specifications can be found [at this link](https://github.com/squillero/computational-intelligence/blob/master/2022-23/lab3_nim.ipynb). To address the problem, we initially (**Task 3.1**) hard-coded the best possible strategy (i.e., *nim-sum*). Later on (**Task 3.2**), we came up with parametric rules that granted us a significant success against a random agent. 
+This repo contains the solution to the third laboratory of the 2022/2023 Computational Intelligence. The problem specifications can be found [at this link](https://github.com/squillero/computational-intelligence/blob/master/2022-23/lab3_nim.ipynb). To address the problem, we initially (**Task 3.1**) hard-coded the best possible strategy (i.e., *nim-sum*). Later on (**Task 3.2**), we came up with parametric rules that granted us a significant success against a random agent.
+> **NOTE**: This folder does not present full development history. Please refer to [Francesco's version](https://github.com/fracapuano/NimAgent) for full development history.
+
 ## Authors
 The contributors of this repo are:
 * [Francesco Capuano](https://github.com/fracapuano/CompIntelligence_2022), s295366 
 * [Matteo Matteotti](https://github.com/mttmtt31/compIntelligence_2022), s294552  
-
-> **NOTE**: This folder does not present full development history. Please refer to [Francesco's version](https://github.com/fracapuano/NimAgent) for full development history.
 
 # Nim
 ## Introduction
