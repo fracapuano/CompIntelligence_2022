@@ -5,6 +5,8 @@ The contributors of this repo are:
 * [Francesco Capuano](https://github.com/fracapuano/CompIntelligence_2022), s295366 
 * [Matteo Matteotti](https://github.com/mttmtt31/compIntelligence_2022), s294552  
 
+> **NOTE**: This folder does not present full development history. Please refer to [Francesco's version](https://github.com/fracapuano/NimAgent) for full development history.
+
 # Nim
 ## Introduction
 Nim is a mathematical game of strategy in which two players take turns removing objects from distinct rows, often referred to *heaps*.
