@@ -57,6 +57,22 @@ The results of our grid search are presented in the following Figure, whereas th
 |![img](images/success_alpha.svg)|![img](images/success_endgamenim.svg)|
 |![img](images/success_k.svg)|![img](images/success_strategy.svg)|
 
+### Minmax
+Agent based on the minmax decision algorithm. Though it comes with an alpha-beta pruning implementation (according to a really simple yet effective solution found [here](https://realpython.com/python-minimax-nim/#optimize-minimax-with-alpha-beta-pruning)), it is still extremely slow when using 5 or more Nim rows.
+
+### RL - our Q-Learning agent
+The idea behind Q-learning is to find a function `Q` which associates to each tuple `(state, action)` the expected return associated to the choice of `action` when in `state`.
+Starting from all rewards equal to 0, at each iteration the model updates the value of `Q(state, action)` based on the current reward and the future best reward according to the following formula:
+
+$$Q(s_t, a_t) \leftarrow  Q(s_t, a_t) + \alpha * (reward_t + \max_aQ(s_{t+1}, a_t) - Q(s_t, a_t))$$.
+
+When called, the agent (inspired from [this](https://github.com/Luigian/Nim)) will first go through the training phase, playing a given number of games (which can be set by the user) against itself. Though not necessary, we decided to train our agent on various different combinations of Nim, keeping the specified number of rows as the only constraint. This was a deliberate choice to guarantee a better exploration of the space.
+
+One can visualise the behahviour of our Q-learning agent when training on `Nim(4)` in the following figure.
+
+![img](images/return_per_episode.svg)
+
+
 ## How to reproduce our results
 The user can decide whether to play a real game against one of our agents, or to simply ask them which is the best move given a specific Nim configuration.
 
@@ -69,7 +85,7 @@ python solution.py
 In addition to that, some arguments can be specified:
 
 - `nim-dimension` : integer specifying the number of rows for your Nim game. The objects are distributed according to a pyramid where each row has a growing odd number of objects. Defaults to 5.
-- `agent` : either 'omni' or 'rules'. Defaults to 'omni'.
+- `agent` : one of ['omni', 'minmax', 'rl', 'rules']. Defaults to 'omni'.
 - `grid-search` : when using the rule-based agent, whether to perform a grid search to find the best configuration of parameters given that specific Nim game. Defaults to False. If False, the default choice for the parameters is the one resulting from a previously tested gridsearch where each configuration was let play 100 `Nim(5)` games against a random agent. Please look at the csv file which comes with this repo to see all the results of that gridsearch.
 - `print-best-config` : whether to print the best configuration of the grid search, or not. Defaults to False.
 - `play-action` : if True, you will play a real game against one of your agent. Defaults to True.
@@ -79,6 +95,7 @@ In addition to that, some arguments can be specified:
 - `rule-strategy` : when using the rule-based agent, strategy to use to weigh pairwise difference. One in ['min', 'max', 'sum']. Defaults to None.
 - `rule-k` : when using the rule-based agent, number of heaps to eliminate during the opening phase. Defaults to None.
 - `rule-endgame-nim` : when using the rule-based agent, percentage of elements to nim from the biggest row during the endgame phase. Defaults to None.
+- `rl-n-iter` : when using the RL-based agent, set the number of games the AI plays against itself during the training phase. Defaults to 10000.
 
 Should you wish to play a 4-row Nim game against the nim-sum agent, you should type:
 
